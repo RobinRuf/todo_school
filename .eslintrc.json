@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:@next/next/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": { "project": ["./tsconfig.json"] },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/strict-boolean-expressions": "warn",
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
+    "argsIgnorePattern": "^_",
+    "varsIgnorePattern": "^_"
+  },
+  "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"]
+}
