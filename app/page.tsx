@@ -1,9 +1,9 @@
-import Image from "next/image";
+import Dashboard from "./Dashboard";
 
 export default function Home() {
   return (
     <div>
-      <p>It Works</p>
+      <Dashboard />
     </div>
   );
 }
