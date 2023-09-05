@@ -16,7 +16,6 @@ export default async function getTodos(
 
       snapshot.forEach((doc) => {
         const todoData = doc.data();
-        todoData.date = new Date(todoData.date); // convert the ISO string back to js date object
         todosArray.push(todoData);
       });
 
