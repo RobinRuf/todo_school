@@ -1,13 +1,18 @@
 import { signOut } from "next-auth/react";
 
 const Header = () => {
-    return (
+  return (
     <div className="flex w-screen max-w-4xl justify-between px-10 text-white pt-5">
-        <p className="text-blue-400 font-light italic">ToDo - Dashboard</p>
-        <p>ToDo suchen (coming soon)</p>
-      <button className="text-white bg-blue-400 rounded-full px-4 py-1 hover:bg-blue-400/80 transition-transform transform hover:scale-110" onClick={() => signOut()}>Logout</button>
+      <p className="text-blue-400 font-light italic">ToDo - Dashboard</p>
+      <p>ToDo suchen (coming soon)</p>
+      <button
+        className="text-white bg-blue-400/60 rounded-full px-4 py-1 hover:bg-blue-400/100 transition-transform transform hover:scale-110"
+        onClick={() => signOut()}
+      >
+        Logout
+      </button>
     </div>
-    )
-}
+  );
+};
 
-export default Header
+export default Header;
