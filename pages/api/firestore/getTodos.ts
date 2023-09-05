@@ -16,6 +16,7 @@ export default async function getTodos(
 
       snapshot.forEach((doc) => {
         const todoData = doc.data();
+        todoData.id = doc.id; // Hinzufügen der Dokument-ID
         todosArray.push(todoData);
       });
 
