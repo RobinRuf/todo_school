@@ -77,7 +77,7 @@ const Dashboard = () => {
       });
 
       if (response.ok) {
-        toast.success("Deleted Todo successfully");
+        toast.success("Deleted Todo successfully!");
         fetchTodos();
       } else {
         const data = await response.json();

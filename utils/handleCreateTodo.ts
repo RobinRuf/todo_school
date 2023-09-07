@@ -32,7 +32,7 @@ export const handleCreateToDo = async ({
     );
 
     if (response.status === 200) {
-      toast.success("Todo successfully created");
+      toast.success("Created Todo successfully!");
       return true;
     } else {
       const data = await response.json();
