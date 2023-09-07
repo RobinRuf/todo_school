@@ -59,6 +59,9 @@ const Input = ({ onTodoCreated }: Props) => {
           className="flex-grow p-2 pl-4 bg-gray-800 text-white border-l border-gray-600 focus:ring-0 outline-none"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") handleCreate();
+          }}
         />
         <button
           onClick={handleCreate}
