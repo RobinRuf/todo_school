@@ -102,26 +102,31 @@ const Dashboard = () => {
           <Header />
 
           {/* ToDo List */}
+
           <div className="todos-list mt-10 mx-4">
             {todos?.map((todo, index) => (
               <div
                 key={index}
-                className="flex justify-between items-center todo-item w-full max-w-3xl mx-auto bg-gradient-to-br from-blue-700/80 to-blue-200/80 text-white rounded-md mb-4 p-3"
+                className="flex justify-between items-start todo-item w-full max-w-3xl mx-auto bg-gradient-to-br from-blue-700/80 to-blue-200/80 text-white rounded-md mb-4 p-3"
               >
-                <span>{todo.todo}</span>
+                {/* Datum und ToDo Text */}
+                <div>
+                  <span className="block">{todo.date}</span>
+                  <span className="block mt-2">{todo.todo}</span>
+                </div>
+
+                {/* Icons */}
                 <div className="flex items-center space-x-3">
-                  <span>{todo.date}</span>
                   <FontAwesomeIcon
                     icon={faPencilAlt}
                     title="Edit ToDo"
                     className="transform transition-transform duration-300 hover:scale-110 cursor-pointer"
                   />
-
                   <FontAwesomeIcon
                     icon={faTrash}
                     title="Delete ToDo"
                     className="transform transition-transform duration-300 hover:scale-110 cursor-pointer"
-                    onClick={() => deleteTodo(todo.id)} // Hier wird die Funktion ausgeführt, wenn auf das Icon geklickt wird
+                    onClick={() => deleteTodo(todo.id)}
                   />
                 </div>
               </div>
