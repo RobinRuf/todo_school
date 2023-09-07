@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { adminDb } from "../../../firebaseAdmin";
+import { toast } from "react-toastify";
 
 export default async function deleteTodo(
   req: NextApiRequest,
@@ -27,6 +28,7 @@ export default async function deleteTodo(
 
       return res.status(200).json({ message: "ToDo erfolgreich gelöscht." });
     } catch (error) {
+      toast.error("Database error:" + error);
       console.error("Database error:", error);
       return res.status(500).json({ message: error.message });
     }

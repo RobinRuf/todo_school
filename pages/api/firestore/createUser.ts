@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { adminDb } from "../../../firebaseAdmin";
+import { toast } from "react-toastify";
 
 export default async function createUser(
   req: NextApiRequest,
@@ -22,6 +23,7 @@ export default async function createUser(
 
         res.status(200).json({ message: "Signed up successfully!" });
       } catch (error) {
+        toast.error("Database error:" + error);
         console.error("Database error:", error);
         res.status(500).json({ message: error.message });
       }

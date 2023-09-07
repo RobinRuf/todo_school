@@ -1,3 +1,6 @@
+import { faToiletPaperSlash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+
 export async function deleteTodo(todoId, email) {
   try {
     const response = await fetch("/api/deleteTodo", {
@@ -12,13 +15,12 @@ export async function deleteTodo(todoId, email) {
     });
 
     if (response.ok) {
-      // Sie können hier weitere Logik hinzufügen, z. B. den UI-Status aktualisieren
-      console.log("ToDo erfolgreich gelöscht");
+      toast.success("ToDo successfully deleted!");
     } else {
       const data = await response.json();
-      console.error("Fehler beim Löschen des ToDos:", data.message);
+      toast.error("Error:", data.message);
     }
-  } catch (error) {
-    console.error("Ein Fehler ist aufgetreten:", error);
+  } catch (e) {
+    toast.error("Error:", e.message);
   }
 }

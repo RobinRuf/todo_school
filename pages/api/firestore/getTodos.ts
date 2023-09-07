@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { adminDb } from "../../../firebaseAdmin";
+import { toast } from "react-toastify";
 
 export default async function getTodos(
   req: NextApiRequest,
@@ -25,6 +26,7 @@ export default async function getTodos(
 
       return res.status(200).json({ data: todosArray });
     } catch (error) {
+      toast.error("Database error:" + error);
       console.error("Database error:", error);
       return res.status(500).json({ message: error.message });
     }
