@@ -96,7 +96,7 @@ const Dashboard = () => {
           <Header />
 
           {/* ToDo List */}
-          <div className="todos-list mt-10">
+          <div className="todos-list mt-10 mx-4">
             {todos?.map((todo, index) => (
               <div
                 key={index}

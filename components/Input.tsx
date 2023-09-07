@@ -32,7 +32,7 @@ const Input = ({ onTodoCreated }: Props) => {
   };
 
   return (
-    <div className="fixed bottom-10 w-full flex justify-center">
+    <div className="fixed bottom-10 w-full flex justify-center px-4">
       <div className="flex w-full max-w-3xl mx-auto">
         <div className="flex items-center px-4 bg-gray-800 rounded-l-full">
           <FontAwesomeIcon
