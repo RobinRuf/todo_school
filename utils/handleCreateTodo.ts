@@ -1,4 +1,5 @@
 import { ToDo } from "@/typings";
+import { toast } from "react-toastify";
 
 export const handleCreateToDo = async ({
   email,
@@ -8,7 +9,7 @@ export const handleCreateToDo = async ({
   tag,
 }: ToDo) => {
   if (!email || !todo || !date || !state) {
-    console.error("Missing required fields.");
+    toast.error("Missing required fields!");
     return;
   }
 
@@ -31,14 +32,15 @@ export const handleCreateToDo = async ({
     );
 
     if (response.status === 200) {
+      toast.success("Todo successfully created");
       return true;
     } else {
       const data = await response.json();
-      console.error(data.message);
+      toast.error(`Error: ${data.message}`);
       return false;
     }
   } catch (e) {
-    console.error(e);
+    toast.error(`Error while creating Todo: ${e.message}`);
     return false;
   }
 };

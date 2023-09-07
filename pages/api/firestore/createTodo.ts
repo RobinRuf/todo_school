@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { adminDb } from "../../../firebaseAdmin";
+import { toast } from "react-toastify";
 
 export default async function createTodo(
   req: NextApiRequest,
@@ -21,6 +22,7 @@ export default async function createTodo(
 
       res.status(200).json({ message: "Todo created successfully" });
     } catch (error) {
+      toast.error("Database error:" + error);
       console.error("Database error:", error);
       res.status(500).json({ message: error.message });
     }

@@ -7,6 +7,7 @@ import { handleGetTodos } from "@/utils/handleGetTodos";
 import { ToDo } from "@/typings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const { data: session } = useSession();
@@ -55,10 +56,13 @@ const Dashboard = () => {
       headers: {
         "content-type": "application/json",
       },
-    }).catch((e) => console.log(e));
+    }).catch((e) => {
+      toast.error("Unexpected Error - please reload");
+      console.log(e.message);
+    });
   }, [session]);
 
-  async function deleteTodo(todoId) {
+  async function deleteTodo(todoId: string) {
     try {
       const response = await fetch("/api/firestore/deleteTodo", {
         method: "POST",
@@ -73,14 +77,16 @@ const Dashboard = () => {
       });
 
       if (response.ok) {
-        console.log("ToDo erfolgreich gelöscht");
+        toast.success("Deleted Todo successfully");
         fetchTodos();
       } else {
         const data = await response.json();
-        console.error("Fehler beim Löschen des ToDos:", data.message);
+        toast.error("Error while deleting Todo - please reload");
+        console.error("Error while deleting Todo:", data.message);
       }
     } catch (error) {
-      console.error("Ein Fehler ist aufgetreten:", error);
+      toast.error("Error while deleting Todo - please reload");
+      console.error("Error while deleting Todo", error);
     }
   }
 
