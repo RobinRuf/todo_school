@@ -9,12 +9,16 @@ import { useSession } from "next-auth/react";
 import { handleCreateToDo } from "@/utils/handleCreateTodo";
 import { ToDo } from "@/typings";
 
-const Input = () => {
+type Props = {
+  onTodoCreated: () => void;
+};
+
+const Input = ({ onTodoCreated }: Props) => {
   const { data: session } = useSession();
   const [input, setInput] = useState("");
   const [date, setDate] = useState<Date | null>(null);
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!session) return;
     const todoDetails: ToDo = {
       email: session!.user!.email!,
@@ -23,7 +27,8 @@ const Input = () => {
       state: "open",
       tag: "",
     };
-    handleCreateToDo(todoDetails);
+    const success = await handleCreateToDo(todoDetails);
+    if (success) onTodoCreated();
   };
 
   return (

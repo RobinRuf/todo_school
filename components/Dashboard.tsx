@@ -13,7 +13,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [todos, setTodos] = useState<ToDo[]>([]);
 
-  function formatDate(isoString) {
+  function formatDate(isoString: string) {
     const date = new Date(isoString);
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // add 1 because months are 0-based
@@ -94,8 +94,8 @@ const Dashboard = () => {
         <div className="flex flex-col">
           {/* Header */}
           <Header />
-          {/* ToDo List */}
 
+          {/* ToDo List */}
           <div className="todos-list mt-10">
             {todos?.map((todo, index) => (
               <div
@@ -124,7 +124,7 @@ const Dashboard = () => {
 
           {/* Footer */}
           <div className="flex justify-center">
-            <Input />
+            <Input onTodoCreated={fetchTodos} />
           </div>
         </div>
       )}
