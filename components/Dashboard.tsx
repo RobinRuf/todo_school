@@ -157,12 +157,15 @@ const Dashboard = () => {
           <p className="text-7xl text-blue-400">Loading...</p>
         </div>
       ) : (
-        <div className="flex flex-col">
+        <div className="flex flex-col h-full overflow-y-hidden">
           {/* Header */}
           <Header onSearch={setSearchText} />
 
           {/* ToDo List */}
-          <div className="todos-list mt-10 mx-4">
+          <div
+            className="flex-grow overflow-y-auto mt-10 mx-4 pb-20 no-scrollbar"
+            style={{ maxHeight: "calc(100vh - 220px)" }}
+          >
             {filteredTodos?.map((todo, index) => (
               <div
                 key={index}
@@ -179,7 +182,7 @@ const Dashboard = () => {
                       timeFormat="HH:mm"
                       timeIntervals={10}
                       className="bg-gray-800 text-white w-32 focus:ring-0 outline-none"
-                      placeholderText={todo.formattedDate} // Verwenden Sie das formatierte Datum als Platzhalter
+                      placeholderText={todo.formattedDate}
                       minDate={new Date()}
                     />
                   ) : (
@@ -240,7 +243,7 @@ const Dashboard = () => {
           </div>
 
           {/* Footer */}
-          <div className="flex justify-center">
+          <div className="flex-shrink-0 pb-4">
             <Input onTodoCreated={fetchTodos} />
           </div>
         </div>
