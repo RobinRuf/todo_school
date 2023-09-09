@@ -3,6 +3,7 @@ export type ToDo = {
   email: string;
   todo: string;
   date: Date;
+  formatedDate: string;
   state: string;
   tag?: string;
 };
