@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { signOut } from "next-auth/react";
 
 const Header = () => {
@@ -9,7 +11,7 @@ const Header = () => {
         className="text-white bg-blue-400/60 rounded-full px-4 py-1 hover:bg-blue-400/100 transition-transform transform hover:scale-110"
         onClick={() => signOut()}
       >
-        Logout
+        <FontAwesomeIcon icon={faSignOutAlt} title="Logout" />
       </button>
     </div>
   );
