@@ -6,18 +6,30 @@ import Input from "./Input";
 import { handleGetTodos } from "@/utils/handleGetTodos";
 import { ToDo } from "@/typings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPencilAlt,
+  faTrash,
+  faSave,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Dashboard = () => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const [todos, setTodos] = useState<ToDo[]>([]);
+  const [editingTodo, setEditingTodo] = useState(null);
+  const [editTodoText, setEditTodoText] = useState("");
+  const [editTodoDate, setEditTodoDate] = useState(null);
 
   function formatDate(isoString: string) {
+    if (!isoString) return "Invalid Date";
+
     const date = new Date(isoString);
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // add 1 because months are 0-based
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -31,7 +43,7 @@ const Dashboard = () => {
     const formattedTodos = todosArray.map((todo) => {
       return {
         ...todo,
-        date: formatDate(todo.date),
+        formattedDate: formatDate(todo.date), // Formatieren Sie das ISO-Datum für die Anzeige
       };
     });
     setTodos(formattedTodos);
@@ -61,6 +73,45 @@ const Dashboard = () => {
       console.log(e.message);
     });
   }, [session]);
+
+  async function updateTodo() {
+    try {
+      const response = await fetch("/api/firestore/updateTodo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: session!.user!.email!,
+          id: todos[editingTodo].id,
+          newText: editTodoText,
+          newDate: editTodoDate.toISOString(),
+        }),
+      });
+
+      if (response.ok) {
+        // update todo locally, so changed are visible immediately
+        setTodos((prevTodos) => {
+          const updatedTodos = [...prevTodos];
+          updatedTodos[editingTodo] = {
+            ...updatedTodos[editingTodo],
+            todo: editTodoText,
+            date: editTodoDate.toISOString(),
+            formattedDate: formatDate(editTodoDate.toISOString()),
+          };
+          return updatedTodos;
+        });
+        toast.success("Todo updated successfully");
+      } else {
+        throw new Error("Failed to update Todo");
+      }
+    } catch (error) {
+      toast.error("Error while updating todo");
+      console.error("Error while updating todo:", error);
+    } finally {
+      setEditingTodo(null);
+    }
+  }
 
   async function deleteTodo(todoId: string) {
     try {
@@ -102,7 +153,6 @@ const Dashboard = () => {
           <Header />
 
           {/* ToDo List */}
-
           <div className="todos-list mt-10 mx-4">
             {todos?.map((todo, index) => (
               <div
@@ -111,23 +161,71 @@ const Dashboard = () => {
               >
                 {/* Datum und ToDo Text */}
                 <div>
-                  <span className="block">{todo.date}</span>
-                  <span className="block mt-2">{todo.todo}</span>
+                  {editingTodo === index ? (
+                    <DatePicker
+                      selected={editTodoDate || new Date(todo.date)}
+                      onChange={(date) => setEditTodoDate(date)}
+                      dateFormat="dd.MM.yyyy HH:mm"
+                      showTimeSelect
+                      timeFormat="HH:mm"
+                      timeIntervals={10}
+                      className="bg-gray-800 text-white w-32 focus:ring-0 outline-none"
+                      placeholderText={todo.formattedDate} // Verwenden Sie das formatierte Datum als Platzhalter
+                      minDate={new Date()}
+                    />
+                  ) : (
+                    <span className="block">{todo.formattedDate}</span>
+                  )}
+                  {editingTodo === index ? (
+                    <input
+                      type="text"
+                      value={editTodoText}
+                      onChange={(e) => setEditTodoText(e.target.value)}
+                      className="bg-gray-800 text-white mt-2 block w-full rounded border-none outline-none"
+                    />
+                  ) : (
+                    <span className="block mt-2">{todo.todo}</span>
+                  )}
                 </div>
 
                 {/* Icons */}
+
                 <div className="flex items-center space-x-3">
-                  <FontAwesomeIcon
-                    icon={faPencilAlt}
-                    title="Edit ToDo"
-                    className="transform transition-transform duration-300 hover:scale-110 cursor-pointer"
-                  />
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    title="Delete ToDo"
-                    className="transform transition-transform duration-300 hover:scale-110 cursor-pointer"
-                    onClick={() => deleteTodo(todo.id)}
-                  />
+                  {editingTodo === index ? (
+                    <>
+                      <FontAwesomeIcon
+                        icon={faTimes}
+                        title="Cancel Editing"
+                        className="h-4 w-4 transform transition-transform duration-300 hover:scale-110 cursor-pointer"
+                        onClick={() => setEditingTodo(null)}
+                      />
+                      <FontAwesomeIcon
+                        icon={faSave}
+                        title="Save ToDo"
+                        className="h-4 w-4 transform transition-transform duration-300 hover:scale-110 cursor-pointer"
+                        onClick={updateTodo}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
+                        title="Edit ToDo"
+                        className="h-4 w-4 transform transition-transform duration-300 hover:scale-110 cursor-pointer"
+                        onClick={() => {
+                          setEditingTodo(index);
+                          setEditTodoText(todo.todo);
+                          setEditTodoDate(new Date(todo.date));
+                        }}
+                      />
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        title="Delete ToDo"
+                        className="h-4 w-4 transform transition-transform duration-300 hover:scale-110 cursor-pointer"
+                        onClick={() => deleteTodo(todo.id)}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             ))}

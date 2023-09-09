@@ -2,17 +2,17 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { adminDb } from "../../../firebaseAdmin";
 import { toast } from "react-toastify";
 
-export default async function deleteTodo(
+export default async function updateTodo(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { email, id } = req.body; // Destructuring, um email und id aus dem Body zu extrahieren
+    const { email, id, newText, newDate } = req.body; // Destructuring, um die benötigten Daten aus dem Body zu extrahieren
 
-    if (!email || !id) {
+    if (!email || !id || !newText || !newDate) {
       return res
         .status(400)
-        .json({ message: "Email und id sind erforderlich." });
+        .json({ message: "Email, id, newText und newDate sind erforderlich." });
     }
 
     try {
@@ -22,12 +22,16 @@ export default async function deleteTodo(
         .collection("todos")
         .doc(id);
 
-      // Delete document
-      await todoRef.delete();
+      // Update document
+      await todoRef.update({
+        todo: newText,
+        date: newDate,
+      });
 
-      return res.status(200).json({ message: "ToDo erfolgreich gelöscht." });
+      return res
+        .status(200)
+        .json({ message: "ToDo erfolgreich aktualisiert." });
     } catch (error) {
-      toast.error("Database error:" + error);
       console.error("Database error:", error);
       return res.status(500).json({ message: error.message });
     }
