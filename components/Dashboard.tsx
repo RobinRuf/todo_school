@@ -40,16 +40,27 @@ const Dashboard = () => {
   }
 
   async function fetchTodos() {
-    const fetchedTodos = await handleGetTodos(session!.user!.email!);
-    const todosArray = fetchedTodos.data;
-    const formattedTodos = todosArray.map((todo) => {
-      return {
-        ...todo,
-        formattedDate: formatDate(todo.date), // Formatieren Sie das ISO-Datum für die Anzeige
-      };
-    });
-    setTodos(formattedTodos);
-    setLoading(false);
+    try {
+      const fetchedTodos = await handleGetTodos(session!.user!.email!);
+      const todosArray = fetchedTodos.data;
+
+      const formattedTodos = todosArray.map((todo) => {
+        return {
+          ...todo,
+          formattedDate: formatDate(todo.date),
+        };
+      });
+
+      const sortedFormattedTodos = formattedTodos.sort((a, b) => {
+        return new Date(a.date) - new Date(b.date);
+      });
+
+      setTodos(sortedFormattedTodos);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching todos:", error);
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
