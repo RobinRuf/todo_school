@@ -23,6 +23,8 @@ const Dashboard = () => {
   const [editingTodo, setEditingTodo] = useState(null);
   const [editTodoText, setEditTodoText] = useState("");
   const [editTodoDate, setEditTodoDate] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [filteredTodos, setFilteredTodos] = useState<ToDo[]>([]);
 
   function formatDate(isoString: string) {
     if (!isoString) return "Invalid Date";
@@ -55,6 +57,13 @@ const Dashboard = () => {
     fetchTodos();
   }, [session]);
 
+  useEffect(() => {
+    setFilteredTodos(
+      todos.filter((todo) =>
+        todo.todo.toLowerCase().includes(searchText.toLowerCase())
+      )
+    );
+  }, [searchText, todos]);
   useEffect(() => {
     if (!session) return;
 
@@ -144,17 +153,17 @@ const Dashboard = () => {
   return (
     <>
       {loading ? (
-        <div>
-          <p>Loading...</p>
+        <div className="flex items-center justify-center h-screen">
+          <p className="text-7xl text-blue-400">Loading...</p>
         </div>
       ) : (
         <div className="flex flex-col">
           {/* Header */}
-          <Header />
+          <Header onSearch={setSearchText} />
 
           {/* ToDo List */}
           <div className="todos-list mt-10 mx-4">
-            {todos?.map((todo, index) => (
+            {filteredTodos?.map((todo, index) => (
               <div
                 key={index}
                 className="flex justify-between items-start todo-item w-full max-w-3xl mx-auto bg-gradient-to-br from-blue-700/80 to-blue-200/80 text-white rounded-md mb-4 p-3"
@@ -189,7 +198,6 @@ const Dashboard = () => {
                 </div>
 
                 {/* Icons */}
-
                 <div className="flex items-center space-x-3">
                   {editingTodo === index ? (
                     <>
