@@ -16,17 +16,23 @@ import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+interface TodoWithFormattedDate extends ToDo {
+  formattedDate: string;
+}
+
 const Dashboard = () => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
-  const [todos, setTodos] = useState<ToDo[]>([]);
-  const [editingTodo, setEditingTodo] = useState(null);
-  const [editTodoText, setEditTodoText] = useState("");
-  const [editTodoDate, setEditTodoDate] = useState(null);
-  const [searchText, setSearchText] = useState("");
-  const [filteredTodos, setFilteredTodos] = useState<ToDo[]>([]);
+  const [todos, setTodos] = useState<TodoWithFormattedDate[]>([]);
+  const [editingTodo, setEditingTodo] = useState<number | null>(null);
+  const [editTodoText, setEditTodoText] = useState<string>("");
+  const [editTodoDate, setEditTodoDate] = useState<Date | null>(null);
+  const [searchText, setSearchText] = useState<string>("");
+  const [filteredTodos, setFilteredTodos] = useState<TodoWithFormattedDate[]>(
+    []
+  );
 
-  function formatDate(isoString: string) {
+  function formatDate(isoString: string): string {
     if (!isoString) return "Invalid Date";
 
     const date = new Date(isoString);
@@ -39,21 +45,23 @@ const Dashboard = () => {
     return `${day}.${month}.${year} ${hours}:${minutes}`;
   }
 
-  async function fetchTodos() {
+  async function fetchTodos(): Promise<void> {
     try {
       const fetchedTodos = await handleGetTodos(session!.user!.email!);
       const todosArray = fetchedTodos.data;
 
-      const formattedTodos = todosArray.map((todo) => {
+      const formattedTodos = todosArray.map((todo: ToDo) => {
         return {
           ...todo,
           formattedDate: formatDate(todo.date),
         };
       });
 
-      const sortedFormattedTodos = formattedTodos.sort((a, b) => {
-        return new Date(a.date) - new Date(b.date);
-      });
+      const sortedFormattedTodos = formattedTodos.sort(
+        (a: TodoWithFormattedDate, b: TodoWithFormattedDate) => {
+          return new Date(a.date) - new Date(b.date);
+        }
+      );
 
       setTodos(sortedFormattedTodos);
       setLoading(false);
